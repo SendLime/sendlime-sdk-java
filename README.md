@@ -31,7 +31,7 @@ Step 1. Add the JitPack repository to your build file .
 Step 2. Add the dependency.
 
 ```gradle
-   dependencies {
+   	dependencies {
 	        implementation 'com.github.SendLime:sendlime-sdk-java:{LATEST_RELEASE}'
 	}
 ```

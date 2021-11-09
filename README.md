@@ -41,7 +41,7 @@ Step 2. Add the dependency.
 Step 1. Add the JitPack repository to your build file
 
 ```maven
-    <repositories>
+    	<repositories>
 		<repository>
 		    <id>jitpack.io</id>
 		    <url>https://jitpack.io</url>
@@ -52,7 +52,7 @@ Step 1. Add the JitPack repository to your build file
 Step 2. Add the dependency
 
 ```maven
-   <dependency>
+   	<dependency>
 	    <groupId>com.github.SendLime</groupId>
 	    <artifactId>sendlime-sdk-java</artifactId>
 	    <version>{LATEST_RELEASE}</version>

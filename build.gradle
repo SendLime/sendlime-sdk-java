@@ -6,7 +6,7 @@ plugins {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            groupId = 'org.gradle.sample'
+            groupId = 'com.sendlime.client'
             artifactId = 'library'
             version = '1.1'
 

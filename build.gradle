@@ -3,7 +3,8 @@ plugins {
     id 'java-library'
 }
 
-group 'org.example'
+apply plugin: 'maven-publish'
+group 'com.github.sendlime'
 version '1.0-SNAPSHOT'
 
 repositories {

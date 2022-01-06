@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import java.util.concurrent.TimeUnit;
 
 public class ApiClient {
-    public static Comm5Api comm5Api = null;
+    public static SendLimeApi comm5Api = null;
 
     public static void getClient() {
         if (comm5Api == null) {
@@ -23,12 +23,12 @@ public class ApiClient {
                     .baseUrl(Constants.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
-                    .create(Comm5Api.class);
+                    .create(SendLimeApi.class);
 
         }
     }
 
-    public synchronized static Comm5Api getInstance() {
+    public synchronized static SendLimeApi getInstance() {
         if (comm5Api == null) {
             getClient();
         }

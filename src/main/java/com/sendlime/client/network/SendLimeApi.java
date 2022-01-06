@@ -6,7 +6,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
-public interface Comm5Api {
+public interface SendLimeApi {
     @POST("sms")
     Call<SubmitTextResponse> sendMessage(@Body SubmitTextBody sendMessageBody);
 }

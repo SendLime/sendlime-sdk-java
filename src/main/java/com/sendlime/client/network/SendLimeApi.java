@@ -7,6 +7,6 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface SendLimeApi {
-    @POST("sms")
+    @POST("sms/")
     Call<SubmitTextResponse> sendMessage(@Body SubmitTextBody sendMessageBody);
 }

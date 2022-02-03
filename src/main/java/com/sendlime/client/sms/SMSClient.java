@@ -3,13 +3,14 @@ package com.sendlime.client.sms;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sendlime.client.auth.AuthHolder;
-import com.sendlime.client.model.SubmitTextBody;
-import com.sendlime.client.model.SubmitTextResponse;
+import com.sendlime.client.model.SubmitMessageBody;
+import com.sendlime.client.model.SubmitMessageResponse;
 import com.sendlime.client.network.ApiClient;
 import retrofit2.Response;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Base64;
 import java.util.regex.Pattern;
 
 /**
@@ -21,6 +22,7 @@ public class SMSClient {
 
     /**
      * Create a new SmsClient.
+     *
      * @param authHolder AuthHolder used to create a Sms network Request
      */
     public SMSClient(AuthHolder authHolder) {
@@ -29,52 +31,46 @@ public class SMSClient {
 
     /**
      * Send an SMS message.
-     *
+     * <p>
      * This uses the supplied object to construct a request and post it to the SendLime API
      *
-     * @param to The number user intend to send.
-     *
+     * @param to   The number user intend to send.
      * @param text The text user intend to send.
-     *
-     * @return SubmitTextResponse an object that contains the detail of the sms request
-     *
+     * @return SubmitMessageResponse an object that contains the detail of the sms request
      * @throws IllegalStateException if there is any wrong with given to or text
      */
-    public SubmitTextResponse sendMessage(String to, String text) throws IllegalStateException{
+    public SubmitMessageResponse sendMessage(String to, String text) throws IllegalStateException {
         toValidator(to);
-        return sentNetworkRequest(new SubmitTextBody(authHolder.getApiKey(), authHolder.getApiSecret(), to, text));
+        return sentNetworkRequest(new SubmitMessageBody(to, text));
     }
 
     /**
      * Send an SMS message.
-     *
+     * <p>
      * This uses the supplied object to construct a request and post it to the SendLime API
      *
      * @param from The number user intend to send from.
-     *
-     * @param to The number user intend to send.
-     *
+     * @param to   The number user intend to send.
      * @param text The text user intend to send.
-     *
-     * @return SubmitTextResponse an object that contains the detail of the sms request
-     *
+     * @return SubmitMessageResponse an object that contains the detail of the sms request
      * @throws IllegalStateException if there is any wrong with given to or text
      */
-    public SubmitTextResponse sendMessage(String from, String to, String text) throws IllegalStateException {
+    public SubmitMessageResponse sendMessage(String from, String to, String text) throws IllegalStateException {
         toValidator(to);
-        return sentNetworkRequest(new SubmitTextBody(authHolder.getApiKey(), authHolder.getApiSecret(), from, to, text));
+        return sentNetworkRequest(new SubmitMessageBody(from, to, text));
     }
 
-    private SubmitTextResponse sentNetworkRequest(SubmitTextBody sendMessageBody) {
-        SubmitTextResponse sendMessageResponse = new SubmitTextResponse();
+    private SubmitMessageResponse sentNetworkRequest(SubmitMessageBody sendMessageBody) {
+        SubmitMessageResponse sendMessageResponse = new SubmitMessageResponse();
 
         try {
-            Response<SubmitTextResponse> response = ApiClient.getInstance()
+            Response<SubmitMessageResponse> response = ApiClient.getInstance(Base64.getEncoder().encodeToString(
+                            (authHolder.getApiKey() + ":" + authHolder.getApiSecret()).getBytes()))
                     .sendMessage(sendMessageBody)
                     .execute();
 
             if (response.code() == 400) {
-                Type type = new TypeToken<SubmitTextResponse>() {
+                Type type = new TypeToken<SubmitMessageResponse>() {
                 }.getType();
                 assert response.errorBody() != null;
                 sendMessageResponse.copy(new Gson().fromJson(response.errorBody().charStream(), type));

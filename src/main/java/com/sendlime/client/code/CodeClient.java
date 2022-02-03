@@ -2,13 +2,12 @@ package com.sendlime.client.code;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.sendlime.client.SendLimeClient;
 import com.sendlime.client.auth.AuthHolder;
 import com.sendlime.client.common.Utils;
-import com.sendlime.client.model.SubmitCodeBody;
-import com.sendlime.client.model.SubmitCodeResponse;
-import com.sendlime.client.model.SubmitMessageBody;
-import com.sendlime.client.model.SubmitMessageResponse;
+import com.sendlime.client.model.*;
 import com.sendlime.client.network.ApiClient;
+import com.sendlime.client.network.SendLimeApi;
 import retrofit2.Response;
 
 import java.io.IOException;
@@ -17,6 +16,7 @@ import java.util.Base64;
 
 public class CodeClient {
     private final AuthHolder authHolder;
+    private SendLimeApi sendLimeApi;
 
     /**
      * Create a new CodeClient.
@@ -25,6 +25,9 @@ public class CodeClient {
      */
     public CodeClient(AuthHolder authHolder) {
         this.authHolder = authHolder;
+
+        sendLimeApi = ApiClient.getInstance(Base64.getEncoder().encodeToString(
+                (authHolder.getApiKey() + ":" + authHolder.getApiSecret()).getBytes()));
     }
 
     /**
@@ -48,11 +51,7 @@ public class CodeClient {
         SubmitCodeResponse submitCodeResponse = new SubmitCodeResponse();
 
         try {
-            Response<SubmitCodeResponse> response = ApiClient.getInstance(Base64.getEncoder().encodeToString(
-                            (authHolder.getApiKey() + ":" + authHolder.getApiSecret()).getBytes()))
-                    .submitCode(submitCodeBody)
-                    .execute();
-
+            Response<SubmitCodeResponse> response = sendLimeApi.submitCode(submitCodeBody).execute();
             if (response.code() != 200) {
                 Type type = new TypeToken<SubmitCodeResponse>() {}.getType();
                 assert response.errorBody() != null;
@@ -68,5 +67,42 @@ public class CodeClient {
         }
 
         return submitCodeResponse;
+    }
+    /**
+     * verify  Code.
+     * <p>
+     * This uses the supplied object to construct a request and post it to the SendLime API
+     *
+     * @param requestID     The request_id got from the sendCodeResponse.
+     * @param code      The code received.
+     * @return VerifyCodeResponse an object that contains the detail of the code request
+     * @throws IllegalStateException if there is any wrong with given to or text
+     */
+    public VerifyCodeResponse verifyCode(String requestID, String code) throws IllegalStateException {
+        if (requestID.isEmpty() || code.isEmpty())
+            throw new IllegalStateException("You must provide both request_id and code");
+        return sendVerifyCodeRequest(new VerifyCodeBody(requestID, code));
+    }
+
+    private VerifyCodeResponse sendVerifyCodeRequest(VerifyCodeBody verifyCodeBody) {
+        VerifyCodeResponse verifyCodeResponse = new VerifyCodeResponse();
+
+        try {
+            Response<VerifyCodeResponse> response = sendLimeApi.verifyCode(verifyCodeBody).execute();
+            if (response.code() != 200) {
+                Type type = new TypeToken<VerifyCodeResponse>() {}.getType();
+                assert response.errorBody() != null;
+                verifyCodeResponse.copy(new Gson().fromJson(response.errorBody().charStream(), type));
+            } else {
+                assert response.body() != null;
+                verifyCodeResponse.copy(response.body());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return verifyCodeResponse;
     }
 }

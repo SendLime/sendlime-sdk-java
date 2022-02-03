@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class SubmitMessageResponse {
 
 	@SerializedName("result")
-	private Result result;
+	private SubmitMessageResult result;
 
 	@SerializedName("error_message")
 	private String errorMessage;
@@ -16,7 +16,7 @@ public class SubmitMessageResponse {
 	@SerializedName("error_code")
 	private String errorCode;
 
-	public Result getResult(){
+	public SubmitMessageResult getResult(){
 		return result;
 	}
 

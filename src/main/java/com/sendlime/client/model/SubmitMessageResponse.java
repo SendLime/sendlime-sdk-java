@@ -32,10 +32,10 @@ public class SubmitMessageResponse {
 		return errorCode;
 	}
 
-	public void copy(SubmitMessageResponse sendMessageResponse) {
-		this.result = sendMessageResponse.result;
-		this.errorMessage = sendMessageResponse.errorMessage;
-		this.success = sendMessageResponse.success;
-		this.errorCode = sendMessageResponse.errorCode;
+	public void copy(SubmitMessageResponse submitMessageResponse) {
+		this.result = submitMessageResponse.result;
+		this.errorMessage = submitMessageResponse.errorMessage;
+		this.success = submitMessageResponse.success;
+		this.errorCode = submitMessageResponse.errorCode;
 	}
 }

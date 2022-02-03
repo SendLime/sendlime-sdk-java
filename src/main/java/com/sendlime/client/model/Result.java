@@ -4,45 +4,31 @@ import com.google.gson.annotations.SerializedName;
 
 public class Result{
 
-	@SerializedName("price")
-	private String price;
-
-	@SerializedName("message_id")
-	private String messageId;
-
-	@SerializedName("from")
-	private String from;
-
 	@SerializedName("to")
 	private String to;
+
+	@SerializedName("request_id")
+	private String requestId;
 
 	@SerializedName("status")
 	private String status;
 
-	@SerializedName("network")
-	private String network;
-
-	public String getPrice(){
-		return price;
-	}
-
-	public String getMessageId(){
-		return messageId;
-	}
-
-	public String getFrom(){
-		return from;
-	}
+	@SerializedName("attempts")
+	private int attempts;
 
 	public String getTo(){
 		return to;
+	}
+
+	public String getRequestId(){
+		return requestId;
 	}
 
 	public String getStatus(){
 		return status;
 	}
 
-	public String getNetwork(){
-		return network;
+	public int getAttempts(){
+		return attempts;
 	}
 }

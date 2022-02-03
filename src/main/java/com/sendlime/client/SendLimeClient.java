@@ -2,6 +2,7 @@ package com.sendlime.client;
 
 
 import com.sendlime.client.auth.AuthHolder;
+import com.sendlime.client.code.CodeClient;
 import com.sendlime.client.sms.SMSClient;
 
 /**
@@ -11,13 +12,19 @@ import com.sendlime.client.sms.SMSClient;
 public class SendLimeClient {
 
     private final SMSClient smsClient;
+    private final CodeClient codeClient;
 
     public SendLimeClient(Builder builder) {
         smsClient = new SMSClient(builder.authHolder);
+        codeClient = new CodeClient(builder.authHolder);
     }
 
     public SMSClient getSmsClient() {
         return smsClient;
+    }
+
+    public CodeClient getCodeClient() {
+        return codeClient;
     }
 
     public static Builder build() {

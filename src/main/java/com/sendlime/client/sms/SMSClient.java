@@ -3,6 +3,7 @@ package com.sendlime.client.sms;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sendlime.client.auth.AuthHolder;
+import com.sendlime.client.common.Utils;
 import com.sendlime.client.model.SubmitMessageBody;
 import com.sendlime.client.model.SubmitMessageResponse;
 import com.sendlime.client.network.ApiClient;
@@ -40,8 +41,8 @@ public class SMSClient {
      * @throws IllegalStateException if there is any wrong with given to or text
      */
     public SubmitMessageResponse sendMessage(String to, String text) throws IllegalStateException {
-        toValidator(to);
-        return sentNetworkRequest(new SubmitMessageBody(to, text));
+        Utils.toValidator(to);
+        return sendNetworkRequest(new SubmitMessageBody(to, text));
     }
 
     /**
@@ -56,28 +57,26 @@ public class SMSClient {
      * @throws IllegalStateException if there is any wrong with given to or text
      */
     public SubmitMessageResponse sendMessage(String from, String to, String text) throws IllegalStateException {
-        toValidator(to);
-        return sentNetworkRequest(new SubmitMessageBody(from, to, text));
+        Utils.toValidator(to);
+        return sendNetworkRequest(new SubmitMessageBody(from, to, text));
     }
 
-    private SubmitMessageResponse sentNetworkRequest(SubmitMessageBody sendMessageBody) {
-        SubmitMessageResponse sendMessageResponse = new SubmitMessageResponse();
+    private SubmitMessageResponse sendNetworkRequest(SubmitMessageBody sendMessageBody) {
+        SubmitMessageResponse submitMessageResponse = new SubmitMessageResponse();
 
         try {
             Response<SubmitMessageResponse> response = ApiClient.getInstance(Base64.getEncoder().encodeToString(
                             (authHolder.getApiKey() + ":" + authHolder.getApiSecret()).getBytes()))
-                    .sendMessage(sendMessageBody)
+                    .submitMessage(sendMessageBody)
                     .execute();
 
-            if (response.code() == 400) {
-                Type type = new TypeToken<SubmitMessageResponse>() {
-                }.getType();
+            if (response.code() != 200) {
+                Type type = new TypeToken<SubmitMessageResponse>() {}.getType();
                 assert response.errorBody() != null;
-                sendMessageResponse.copy(new Gson().fromJson(response.errorBody().charStream(), type));
-                System.out.println(sendMessageResponse.getErrorMessage());
+                submitMessageResponse.copy(new Gson().fromJson(response.errorBody().charStream(), type));
             } else {
                 assert response.body() != null;
-                sendMessageResponse.copy(response.body());
+                submitMessageResponse.copy(response.body());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,12 +84,6 @@ public class SMSClient {
             e.printStackTrace();
         }
 
-        return sendMessageResponse;
-    }
-
-    private void toValidator(String to) {
-        if (!Pattern.compile("^8801[3-9]\\d{8}$").matcher(to).matches()) {
-            throw new IllegalStateException("Invalid to provided");
-        }
+        return submitMessageResponse;
     }
 }

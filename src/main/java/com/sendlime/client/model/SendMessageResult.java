@@ -2,7 +2,7 @@ package com.sendlime.client.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SubmitMessageResult{
+public class SendMessageResult {
 
     @SerializedName("price")
     private String price;

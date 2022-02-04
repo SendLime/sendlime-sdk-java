@@ -1,5 +1,6 @@
 package com.sendlime.client.network;
 
+import com.google.gson.GsonBuilder;
 import com.sendlime.client.common.Constants;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;

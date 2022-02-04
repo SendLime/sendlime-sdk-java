@@ -2,7 +2,7 @@ package com.sendlime.client.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SubmitCodeResult{
+public class SendCodeResult {
 
 	@SerializedName("to")
 	private String to;

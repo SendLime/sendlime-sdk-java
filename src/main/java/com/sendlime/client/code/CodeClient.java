@@ -2,7 +2,6 @@ package com.sendlime.client.code;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.sendlime.client.SendLimeClient;
 import com.sendlime.client.auth.AuthHolder;
 import com.sendlime.client.common.Utils;
 import com.sendlime.client.model.*;
@@ -42,18 +41,72 @@ public class CodeClient {
      * @return SubmitCodeResponse an object that contains the detail of the code request
      * @throws IllegalStateException if there is any wrong with given to or text
      */
-    public SubmitCodeResponse sendCode(String brand, String phoneNumber, String locale, int codeLength) throws IllegalStateException {
+    public SendCodeResponse sendCode(String brand, String phoneNumber, String locale, int codeLength) throws IllegalStateException {
         Utils.toValidator(phoneNumber);
-        return sendCodeRequest(new SubmitCodeBody(brand, phoneNumber, locale, codeLength));
+        return sendCodeRequest(new SendCodeBody(brand, phoneNumber, locale, codeLength));
     }
 
-    private SubmitCodeResponse sendCodeRequest(SubmitCodeBody submitCodeBody) {
-        SubmitCodeResponse submitCodeResponse = new SubmitCodeResponse();
+    /**
+     * Send an SMS Code.
+     * <p>
+     * This uses the supplied object to construct a request and post it to the SendLime API
+     *
+     * @param brand   The brand user intend to send.
+     * @param phoneNumber The phone number user intend to send.
+     * @return SubmitCodeResponse an object that contains the detail of the code request
+     * @throws IllegalStateException if there is any wrong with given to or text
+     */
+    public SendCodeResponse sendCode(String brand, String phoneNumber) {
+        Utils.toValidator(phoneNumber);
+        if (brand.isEmpty())
+            throw new IllegalStateException("Brand name is missing!");
+        return sendCodeRequest(new SendCodeBody(brand, phoneNumber, "bn-bd", 4));
+    }
+
+    /**
+     * Send an SMS Code.
+     * <p>
+     * This uses the supplied object to construct a request and post it to the SendLime API
+     *
+     * @param brand   The brand user intend to send.
+     * @param phoneNumber The phone number user intend to send.
+     * @param locale The local use intend to send.
+     * @return SubmitCodeResponse an object that contains the detail of the code request
+     * @throws IllegalStateException if there is any wrong with given to or text
+     */
+    public SendCodeResponse sendCode(String brand, String phoneNumber, String locale) {
+        Utils.toValidator(phoneNumber);
+        if (brand.isEmpty())
+            throw new IllegalStateException("Brand name is missing!");
+        if (locale.isEmpty())
+            throw new IllegalStateException("Locale is missing!");
+        return sendCodeRequest(new SendCodeBody(brand, phoneNumber, locale, 4));
+    }
+
+
+    /**
+     * Send an SMS Code.
+     * <p>
+     * This uses the supplied object to construct a request and post it to the SendLime API
+     *
+     * @param brand   The brand user intend to send.
+     * @param phoneNumber The phone number user intend to send.
+     * @param codeLength the code length use intend to send.
+     * @return SubmitCodeResponse an object that contains the detail of the code request
+     * @throws IllegalStateException if there is any wrong with given to or text
+     */
+    public SendCodeResponse sendCode(String brand, String phoneNumber, int codeLength) {
+        Utils.toValidator(phoneNumber);
+        return sendCodeRequest(new SendCodeBody(brand, phoneNumber, "bn-bd", codeLength));
+    }
+
+    private SendCodeResponse sendCodeRequest(SendCodeBody submitCodeBody) {
+        SendCodeResponse submitCodeResponse = new SendCodeResponse();
 
         try {
-            Response<SubmitCodeResponse> response = sendLimeApi.submitCode(submitCodeBody).execute();
+            Response<SendCodeResponse> response = sendLimeApi.submitCode(submitCodeBody).execute();
             if (response.code() != 200) {
-                Type type = new TypeToken<SubmitCodeResponse>() {}.getType();
+                Type type = new TypeToken<SendCodeResponse>() {}.getType();
                 assert response.errorBody() != null;
                 submitCodeResponse.copy(new Gson().fromJson(response.errorBody().charStream(), type));
             } else {

@@ -2,10 +2,10 @@ package com.sendlime.client.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SubmitCodeResponse{
+public class SendCodeResponse {
 
 	@SerializedName("result")
-	private SubmitCodeResult result;
+	private SendCodeResult result;
 
 	@SerializedName("error_message")
 	private Object errorMessage;
@@ -16,7 +16,7 @@ public class SubmitCodeResponse{
 	@SerializedName("error_code")
 	private Object errorCode;
 
-	public SubmitCodeResult getResult(){
+	public SendCodeResult getResult(){
 		return result;
 	}
 
@@ -32,7 +32,7 @@ public class SubmitCodeResponse{
 		return errorCode;
 	}
 
-	public void copy(SubmitCodeResponse submitCodeResponse) {
+	public void copy(SendCodeResponse submitCodeResponse) {
 		this.result = submitCodeResponse.result;
 		this.errorMessage = submitCodeResponse.errorMessage;
 		this.success = submitCodeResponse.success;

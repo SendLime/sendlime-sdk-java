@@ -2,7 +2,7 @@ package com.sendlime.client.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SubmitMessageBody {
+public class SendMessageBody {
 
 	@SerializedName("text")
 	private String text;
@@ -31,12 +31,12 @@ public class SubmitMessageBody {
 		this.from = from;
 	}
 
-	public SubmitMessageBody(String to, String text) {
+	public SendMessageBody(String to, String text) {
 		this.text = text;
 		this.to = to;
 	}
 
-	public SubmitMessageBody(String from, String to, String text) {
+	public SendMessageBody(String from, String to, String text) {
 		this.text = text;
 		this.from = from;
 		this.to = to;

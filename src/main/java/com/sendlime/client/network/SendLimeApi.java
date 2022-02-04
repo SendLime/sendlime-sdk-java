@@ -7,10 +7,10 @@ import retrofit2.http.POST;
 
 public interface SendLimeApi {
     @POST("sms/")
-    Call<SubmitMessageResponse> submitMessage(@Body SubmitMessageBody submitMessageBody);
+    Call<SendMessageResponse> submitMessage(@Body SendMessageBody submitMessageBody);
 
     @POST("verify/")
-    Call<SubmitCodeResponse> submitCode(@Body SubmitCodeBody submitCodeBody);
+    Call<SendCodeResponse> submitCode(@Body SendCodeBody submitCodeBody);
 
     @POST("verify/check/")
     Call<VerifyCodeResponse> verifyCode(@Body VerifyCodeBody verifyCodeBody);

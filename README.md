@@ -6,12 +6,21 @@ For full API documentation refer to [developer.sendlime.com](https://developer.s
 
 # Table of Content <!-- omit in toc -->
 
-- [SendLime Server SDK for Java](#sendlime-server-sdk-for-Java)
-    - [Installation](#installation)
-    - [Constructor](#constructor)
-        - [Properties](#properties)
-    - [Send SMS](#send-sms)
+- [Installation](#installation)
+    - [Gradle](#gradle)
+    - [Maven](#maven)
+    - [Version Available](#version-available)
+- [Constructor](#constructor)
+    - [Properties](#properties)
+- [Supported APIs](#supported-apis)
+- [SMS](#sms)
+    - [Send an SMS](#send-an-sms)
     - [Response](#response)
+- [Verify](#verify)
+    - [Send a Code](#send-a-code)
+        - [Response](#response-1)
+    - [Verify a Code](#verify-a-code)
+        - [Response](#response-2)
 - [Support](#support)
 
 ## Installation
@@ -21,42 +30,42 @@ For full API documentation refer to [developer.sendlime.com](https://developer.s
 Step 1. Add the JitPack repository to your build file .
 
 ```gradle
-    allprojects {
-        repositories {
-            maven { url 'https://jitpack.io' }
-        }
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
     }
+}
 ```
 
 Step 2. Add the dependency.
 
 ```gradle
-   	dependencies {
-	        implementation 'com.github.SendLime:sendlime-sdk-java:{LATEST_RELEASE}'
-	}
+dependencies {
+    implementation 'com.github.SendLime:sendlime-sdk-java:{LATEST_RELEASE}'
+}
 ```
 
 ### Maven
 
 Step 1. Add the JitPack repository to your build file
 
-```maven
-    	<repositories>
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-	</repositories>
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
 ```
 
 Step 2. Add the dependency
 
-```maven
-   	<dependency>
-	    <groupId>com.github.SendLime</groupId>
-	    <artifactId>sendlime-sdk-java</artifactId>
-	    <version>{LATEST_RELEASE}</version>
-	</dependency>
+```xml
+<dependency>
+    <groupId>com.github.SendLime</groupId>
+    <artifactId>sendlime-sdk-java</artifactId>
+    <version>{LATEST_RELEASE}</version>
+</dependency>
 ```
 
 ---
@@ -71,10 +80,10 @@ Step 2. Add the dependency
 ## Constructor
 
 ```java
-    SendLimeClient client = SendLimeClient.build()
-                        .apiKey("YOUR_API_KEY")
-                        .apiSecret("YOUR_API_SECRET")
-                        .build();
+SendLimeClient client = SendLimeClient.build()
+                    .apiKey(YOUR_API_KEY)
+                    .apiSecret(YOUR_API_SECRET)
+                    .build();
 ```
 
 ### Properties
@@ -82,29 +91,67 @@ Step 2. Add the dependency
 - apiKey - API Key from Sendlime API. (Required)
 - apiSecret - API Secret from SendLime API. (Required)
 
-## Send SMS
 
-Without from
+## Supported APIs
+
+The following is a list of SendLime APIs and whether the Node Server SDK provides support for them:
+
+| API        | Supported? |
+|------------|------------|
+| SMS API    | ✅          |
+| Verify API | ✅          |
+## SMS
+### Send an SMS
+
+Without from (message will be sent from a random number)
 
 ```java
-    SubmitTextResponse networkResponse = client.getSmsClient()
-                                                .sendMessage("TO_NUMBER", "Hello from  SendLime");
+SendMessageResponse sendMessageResponse =  client.getSmsClient().sendMessage(TO_NUMBER, "Hello World!");
 ```
-With from
+With from (message will be sent from the registered brand or the purchased number you have mentioned)
 
 ```java
-    SubmitTextResponse networkResponse = client.getSmsClient()
-                                                .sendMessage("FROM_NUMBER", TO_NUMBER", "Hello from  SendLime");
+SendMessageResponse sendMessageResponse =  client.getSmsClient().sendMessage(REGISTERED_BRAND_PHONE, TO_NUMBER, "Hello World!");
 ```
 
-## Response
+#### Response
 
 ```java
-    if (networkResponse.isSuccess()) {
-        System.out.println("Message sent successfully");
-    } else {
-        System.out.println("Message failed with error: " + networkResponse.getErrorMessage());
-    }
+if (sendMessageResponse.isSuccess()) {
+    System.out.println("Sent");
+} else {
+    System.out.println(sendMessageResponse.getErrorMessage());
+}
+```
+
+## Verify
+
+### Send a Code
+```java
+SendCodeResponse sendCodeResponse = client.getCodeClient().sendCode(BRAND, TO_NUMBER, LOCALE, CODE_LENGTH);
+```
+
+#### Response
+```java
+if (sendCodeResponse.isSuccess()) {
+    System.out.println(sendCodeResponse.getResult().getRequestId());
+} else {
+    System.out.println(sendCodeResponse.getErrorMessage());
+}
+```
+
+### Verify a Code
+```java
+VerifyCodeResponse verifyCodeResponse = client.getCodeClient().verifyCode(REQUEST_ID, CODE);
+```
+
+#### Response
+```java
+if (verifyCodeResponse.isSuccess()) {
+    System.out.println("Verified");
+} else {
+    System.out.println(verifyCodeResponse.getErrorMessage());
+}
 ```
 
 # Support

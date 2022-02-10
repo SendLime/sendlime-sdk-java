@@ -74,7 +74,7 @@ Step 2. Add the dependency
 
 | Latest Release |
 | ------------- |
-| v1.0.6         |
+| v1.0.11         |
 
 
 ## Constructor

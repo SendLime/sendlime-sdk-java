@@ -41,7 +41,7 @@ Step 2. Add the dependency.
 
 ```gradle
 dependencies {
-    implementation 'com.github.SendLime:sendlime-sdk-java:{LATEST_RELEASE}'
+    implementation 'com.github.SendLime:sendlime-sdk-java:v1.0.11'
 }
 ```
 
@@ -64,17 +64,9 @@ Step 2. Add the dependency
 <dependency>
     <groupId>com.github.SendLime</groupId>
     <artifactId>sendlime-sdk-java</artifactId>
-    <version>{LATEST_RELEASE}</version>
+    <version>v1.0.11</version>
 </dependency>
 ```
-
----
-
-### Version available
-
-| Latest Release |
-| ------------- |
-| v1.0.11         |
 
 
 ## Constructor

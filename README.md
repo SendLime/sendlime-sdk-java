@@ -1,33 +1,15 @@
 # SendLime Server SDK for Java
 
-This is the Java Server SDK for SendLime APIs. To use it you will need a SendLime account. Sign up for free at [sendlime.com](https://sendlime.com).
+This is the Java Server SDK for SendLime Messaging API v2. To use it you need a SendLime account and an API key from the dashboard.
 
-For full API documentation refer to [developer.sendlime.com](https://developer.sendlime.com).
+Full documentation:
 
-# Table of Content <!-- omit in toc -->
-
-- [Installation](#installation)
-    - [Gradle](#gradle)
-    - [Maven](#maven)
-    - [Version Available](#version-available)
-- [Constructor](#constructor)
-    - [Properties](#properties)
-- [Supported APIs](#supported-apis)
-- [SMS](#sms)
-    - [Send an SMS](#send-an-sms)
-    - [Response](#response)
-- [Verify](#verify)
-    - [Send a Code](#send-a-code)
-        - [Response](#response-1)
-    - [Verify a Code](#verify-a-code)
-        - [Response](#response-2)
-- [Support](#support)
+- Developer docs: [developer.sendlime.com](https://developer.sendlime.com)
+- API reference: [api.sendlime.com/api-docs](https://api.sendlime.com/api-docs)
 
 ## Installation
 
 ### Gradle
-
-Step 1. Add the JitPack repository to your build file .
 
 ```gradle
 allprojects {
@@ -35,19 +17,13 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 }
-```
 
-Step 2. Add the dependency.
-
-```gradle
 dependencies {
-    implementation 'com.github.SendLime:sendlime-sdk-java:v1.0.11'
+    implementation 'com.github.SendLime:sendlime-sdk-java:v1.2.0'
 }
 ```
 
 ### Maven
-
-Step 1. Add the JitPack repository to your build file
 
 ```xml
 <repositories>
@@ -56,96 +32,77 @@ Step 1. Add the JitPack repository to your build file
         <url>https://jitpack.io</url>
     </repository>
 </repositories>
-```
 
-Step 2. Add the dependency
-
-```xml
 <dependency>
     <groupId>com.github.SendLime</groupId>
     <artifactId>sendlime-sdk-java</artifactId>
-    <version>v1.0.11</version>
+    <version>v1.2.0</version>
 </dependency>
 ```
-
 
 ## Constructor
 
 ```java
 SendLimeClient client = SendLimeClient.build()
-                    .apiKey(YOUR_API_KEY)
-                    .apiSecret(YOUR_API_SECRET)
-                    .build();
+    .apiKey("sl_live_your_key_here")
+    .build();
 ```
-
-### Properties
-
-- apiKey - API Key from Sendlime API. (Required)
-- apiSecret - API Secret from SendLime API. (Required)
-
 
 ## Supported APIs
 
-The following is a list of SendLime APIs and whether the Node Server SDK provides support for them:
+| API          | Supported? |
+|--------------|------------|
+| SMS API      | Yes        |
+| WhatsApp API | Yes        |
+| Balance API  | Yes        |
+| Verify API   | Legacy / deprecated |
 
-| API        | Supported? |
-|------------|------------|
-| SMS API    | ✅          |
-| Verify API | ✅          |
-## SMS
-### Send an SMS
+## Send an SMS
 
-Without from (message will be sent from a random number)
-
-```java
-SendMessageResponse sendMessageResponse =  client.getSmsClient().sendMessage(TO_NUMBER, "Hello World!");
-```
-With from (message will be sent from the registered brand or the purchased number you have mentioned)
+Without sender / brand ID:
 
 ```java
-SendMessageResponse sendMessageResponse =  client.getSmsClient().sendMessage(REGISTERED_BRAND_PHONE, TO_NUMBER, "Hello World!");
+SendMessageResponse response = client.getSmsClient().sendMessage(TO_NUMBER, "Hello World!");
 ```
 
-#### Response
+With an approved sender / brand ID:
 
 ```java
-if (sendMessageResponse.isSuccess()) {
-    System.out.println("Sent");
+SendMessageResponse response = client.getSmsClient().sendMessage(BRAND_ID, TO_NUMBER, "Hello World!");
+```
+
+```java
+if (response.isSuccess()) {
+    System.out.println(response.getResult().getMessageId());
 } else {
-    System.out.println(sendMessageResponse.getErrorMessage());
+    System.out.println(response.getErrorMessage());
 }
 ```
 
-## Verify
+## Send a WhatsApp message
 
-### Send a Code
 ```java
-SendCodeResponse sendCodeResponse = client.getCodeClient().sendCode(BRAND, TO_NUMBER, LOCALE, CODE_LENGTH);
+SendMessageResponse response = client.getSmsClient().sendWhatsAppMessage(TO_NUMBER, "Hello from WhatsApp!");
 ```
 
-#### Response
+Pass a WhatsApp profile brand ID as the first argument if you need to select a specific approved profile.
+
 ```java
-if (sendCodeResponse.isSuccess()) {
-    System.out.println(sendCodeResponse.getResult().getRequestId());
+SendMessageResponse response = client.getSmsClient().sendWhatsAppMessage(BRAND_ID, TO_NUMBER, "Hello from WhatsApp!");
+```
+
+## Check balance
+
+```java
+BalanceResponse response = client.getSmsClient().getBalance();
+
+if (response.isSuccess()) {
+    System.out.println(response.getResult().getBalance());
 } else {
-    System.out.println(sendCodeResponse.getErrorMessage());
+    System.out.println(response.getErrorMessage());
 }
 ```
 
-### Verify a Code
-```java
-VerifyCodeResponse verifyCodeResponse = client.getCodeClient().verifyCode(REQUEST_ID, CODE);
-```
-
-#### Response
-```java
-if (verifyCodeResponse.isSuccess()) {
-    System.out.println("Verified");
-} else {
-    System.out.println(verifyCodeResponse.getErrorMessage());
-}
-```
-
-# Support
+## Support
 
 [support@sendlime.com](mailto:support@sendlime.com)

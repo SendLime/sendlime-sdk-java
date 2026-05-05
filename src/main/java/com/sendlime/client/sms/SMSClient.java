@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sendlime.client.auth.AuthHolder;
 import com.sendlime.client.common.Utils;
+import com.sendlime.client.model.BalanceResponse;
 import com.sendlime.client.model.SendMessageBody;
 import com.sendlime.client.model.SendMessageResponse;
 import com.sendlime.client.network.ApiClient;
@@ -11,7 +12,6 @@ import retrofit2.Response;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Base64;
 
 /**
  * A client for talking to the SendLime SMS API. The standard way to obtain an instance of this class is to use
@@ -61,12 +61,48 @@ public class SMSClient {
         return sendNetworkRequest(new SendMessageBody(from, to, text));
     }
 
+    public SendMessageResponse sendWhatsAppMessage(String to, String text) throws IllegalStateException {
+        Utils.toValidator(to);
+        SendMessageBody sendMessageBody = new SendMessageBody(to, text);
+        sendMessageBody.setChannel("whatsapp");
+        return sendNetworkRequest(sendMessageBody);
+    }
+
+    public SendMessageResponse sendWhatsAppMessage(String brandId, String to, String text) throws IllegalStateException {
+        Utils.toValidator(to);
+        return sendNetworkRequest(new SendMessageBody(brandId, to, text, "whatsapp"));
+    }
+
+    public BalanceResponse getBalance() {
+        BalanceResponse balanceResponse = new BalanceResponse();
+
+        try {
+            Response<BalanceResponse> response = ApiClient.getInstance(authHolder.getApiKey())
+                    .getBalance()
+                    .execute();
+
+            if (response.code() != 200) {
+                Type type = new TypeToken<BalanceResponse>() {}.getType();
+                assert response.errorBody() != null;
+                balanceResponse.copy(new Gson().fromJson(response.errorBody().charStream(), type));
+            } else {
+                assert response.body() != null;
+                balanceResponse.copy(response.body());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return balanceResponse;
+    }
+
     private SendMessageResponse sendNetworkRequest(SendMessageBody sendMessageBody) {
         SendMessageResponse submitMessageResponse = new SendMessageResponse();
 
         try {
-            Response<SendMessageResponse> response = ApiClient.getInstance(Base64.getEncoder().encodeToString(
-                            (authHolder.getApiKey() + ":" + authHolder.getApiSecret()).getBytes()))
+            Response<SendMessageResponse> response = ApiClient.getInstance(authHolder.getApiKey())
                     .submitMessage(sendMessageBody)
                     .execute();
 

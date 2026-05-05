@@ -11,7 +11,6 @@ import retrofit2.Response;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Base64;
 
 public class CodeClient {
     private final AuthHolder authHolder;
@@ -25,8 +24,7 @@ public class CodeClient {
     public CodeClient(AuthHolder authHolder) {
         this.authHolder = authHolder;
 
-        sendLimeApi = ApiClient.getInstance(Base64.getEncoder().encodeToString(
-                (authHolder.getApiKey() + ":" + authHolder.getApiSecret()).getBytes()));
+        sendLimeApi = ApiClient.getInstance(authHolder.getApiKey());
     }
 
     /**

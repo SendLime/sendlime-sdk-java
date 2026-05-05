@@ -4,11 +4,14 @@ import com.google.gson.annotations.SerializedName;
 
 public class SendMessageResponse {
 
-	@SerializedName("result")
+	@SerializedName("data")
 	private SendMessageResult result;
 
 	@SerializedName("error_message")
 	private String errorMessage;
+
+	@SerializedName("error")
+	private String error;
 
 	@SerializedName("success")
 	private boolean success;
@@ -21,7 +24,7 @@ public class SendMessageResponse {
 	}
 
 	public String getErrorMessage() {
-		return errorMessage;
+		return errorMessage != null ? errorMessage : error;
 	}
 
 	public boolean isSuccess(){

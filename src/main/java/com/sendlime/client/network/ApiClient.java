@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class ApiClient {
     public static SendLimeApi comm5Api = null;
 
-    public static void getClient(String credential) {
+    public static void getClient(String apiKey) {
         if (comm5Api == null) {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .addInterceptor(new Interceptor() {
@@ -24,7 +24,7 @@ public class ApiClient {
                             Request original = chain.request();
                             Request request = original.newBuilder()
                                     .header("Content-Type", "application/json")
-                                    .header("Authorization", "Basic " + credential)
+                                    .header("Authorization", "Bearer " + apiKey)
                                     .method(original.method(), original.body())
                                     .build();
 
@@ -46,9 +46,9 @@ public class ApiClient {
         }
     }
 
-    public synchronized static SendLimeApi getInstance(String crednetial) {
+    public synchronized static SendLimeApi getInstance(String apiKey) {
         if (comm5Api == null) {
-            getClient(crednetial);
+            getClient(apiKey);
         }
         return comm5Api;
     }

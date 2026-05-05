@@ -37,8 +37,6 @@ public class SendLimeClient {
         private AuthHolder authHolder;
 
         /**
-         * When setting an apiKey, it is also expected that {@link #apiSecret(String)}  will also be set
-         *
          * @param apiKey The API Key found in the dashboard for your account.
          *
          * @return The {@link Builder} to keep building.
@@ -49,9 +47,9 @@ public class SendLimeClient {
         }
 
         /**
-         * When setting an apiSecret, it is also expected that {@link #apiKey(String)} will also be set.
+         * Deprecated. SendLime API v2 uses Bearer API keys and no longer requires an API secret.
          *
-         * @param apiSecret The Signature Secret found in the dashboard for your account.
+         * @param apiSecret Ignored by current Messaging API calls.
          *
          * @return The {@link Builder} to keep building.
          */
@@ -71,8 +69,8 @@ public class SendLimeClient {
         }
 
         private AuthHolder generateAuthHolder() {
-            if (apiKey.isEmpty() || apiSecret.isEmpty()) {
-                throw new IllegalStateException("You must provide both apikey and secret");
+            if (apiKey == null || apiKey.isEmpty()) {
+                throw new IllegalStateException("You must provide an API key");
             }
 
             return new AuthHolder(apiKey, apiSecret);

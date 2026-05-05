@@ -7,7 +7,7 @@ public class SendMessageResult {
     @SerializedName("price")
     private String price;
 
-    @SerializedName("message_id")
+    @SerializedName("gateway_id")
     private String messageId;
 
     @SerializedName("from")
@@ -21,6 +21,12 @@ public class SendMessageResult {
 
     @SerializedName("network")
     private String network;
+
+    @SerializedName("channel")
+    private String channel;
+
+    @SerializedName("credits_remaining")
+    private double creditsRemaining;
 
     public String getPrice(){
         return price;
@@ -44,5 +50,13 @@ public class SendMessageResult {
 
     public String getNetwork(){
         return network;
+    }
+
+    public String getChannel(){
+        return channel;
+    }
+
+    public double getCreditsRemaining(){
+        return creditsRemaining;
     }
 }
